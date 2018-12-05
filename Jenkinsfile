@@ -8,6 +8,7 @@ def buildInfo
         stage('Build') {
             steps {
                 sh 'mvn -B -DskipTests clean package'
+                echo 'Package Build'
             }
         }
 
@@ -16,14 +17,17 @@ def buildInfo
             rtMaven.deployer releaseRepo: 'libs-release-local', snapshotRepo: 'libs-snapshot-local', server: server
             rtMaven.resolver releaseRepo: 'libs-release', snapshotRepo: 'libs-snapshot', server: server
             buildInfo = Artifactory.newBuildInfo()
+            echo 'Artifactory configuration'
         }
 
         stage ('Exec Maven') {
             rtMaven.run pom: 'simple-java-maven-app/pom.xml', goals: 'clean install', buildInfo: buildInfo
+            echo 'Maven execute'
         }
 
         stage ('Publish build info') {
             server.publishBuildInfo buildInfo
+            echo 'Publish maven'
         }
     }
 }
