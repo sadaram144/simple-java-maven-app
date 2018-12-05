@@ -11,23 +11,22 @@ def buildInfo
                 echo 'Package Build'
             }
         }
+        stage('upload') {
+           steps {
+              script { 
+                 def server = Artifactory.server 'art-1'
+                 def uploadSpec = """{
+                    "files": [{
+                       "pattern": "com.mycompany.app/my-app/1.0-SNAPSHOT/my-app-1.0-SNAPSHOT.jar/",
+                       "target": "libs-snapshot-local/",
+                        "regexp": "true"
+                    }]
+                 }"""
 
-        stage ('Artifactory configuration') {
-            rtMaven.tool = MAVEN_TOOL // Tool name from Jenkins configuration
-            rtMaven.deployer releaseRepo: 'libs-release-local', snapshotRepo: 'libs-snapshot-local', server: server
-            rtMaven.resolver releaseRepo: 'libs-release', snapshotRepo: 'libs-snapshot', server: server
-            buildInfo = Artifactory.newBuildInfo()
-            echo 'Artifactory configuration'
+                 server.upload(uploadSpec) 
+               }
+            }
         }
-
-        stage ('Exec Maven') {
-            rtMaven.run pom: 'simple-java-maven-app/pom.xml', goals: 'clean install', buildInfo: buildInfo
-            echo 'Maven execute'
-        }
-
-        stage ('Publish build info') {
-            server.publishBuildInfo buildInfo
-            echo 'Publish maven'
-        }
+           
     }
 }
