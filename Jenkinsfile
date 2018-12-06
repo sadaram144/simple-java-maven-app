@@ -15,7 +15,7 @@ pipeline {
                   def buildInfo = Artifactory.newBuildInfo()
                   buildInfo.env.capture = true
                   def rtMaven = Artifactory.newMavenBuild()
-                  rtMaven.tool = MAVEN_TOOL // Tool name from Jenkins configuration
+                  rtMaven.tool = "Maven-3.6.0" // Tool name from Jenkins configuration
                   rtMaven.opts = "-Denv=dev"
                   rtMaven.deployer releaseRepo:'libs-release-local', snapshotRepo:'libs-snapshot-local', server: server
                   rtMaven.resolver releaseRepo:'libs-release', snapshotRepo:'libs-snapshot', server: server
