@@ -38,37 +38,26 @@
 
 
 node {
-
-    stage('Clone sources') {
-        git url: 'https://github.com/sadaram144/simple-java-maven-app.git'
-        echo 'mvn version'
-    }
+    // Get Artifactory server instance, defined in the Artifactory Plugin administration page.
+    def server = Artifactory.server "Art -1"
+    // Create an Artifactory Maven instance.
+    def rtMaven = Artifactory.newMavenBuild()
+    def buildInfo
 
     stage('Artifactory configuration') {
-    script {         
-                 def server = Artifactory.server 'Art -1'
-                 def rtMaven = Artifactory.newMavenBuild()   
-                 echo 'Testing 1' 
-                 
-                 rtMaven.resolver server: server, releaseRepo: 'libs-release', snapshotRepo: 'libs-snapshot'
-                 rtMaven.deployer server: server, releaseRepo: 'libs-release-local', snapshotRepo: 'libs-snapshot-local'
-        
-                 def uploadSpec = """{
-                    "files": [{
-                       "pattern": "com.simple-java-maven-app.app/my-app/1.0-SNAPSHOT/my-app-1.0-SNAPSHOT.jar/",
-                       "target": "libs-snapshot-local/",
-                        "regexp": "true"
-                    }]
-                 }"""
-                
-                def buildInfo = Artifactory.newBuildInfo()
-                
-                rtMaven.run pom: 'simple-java-maven-app/pom.xml', goals: 'clean install', buildInfo: buildInfo
+        // Tool name from Jenkins configuration
+        rtMaven.tool = "Maven-3.6.0"
+        // Set Artifactory repositories for dependencies resolution and artifacts deployment.
+        rtMaven.deployer releaseRepo:'libs-release-local', snapshotRepo:'libs-snapshot-local', server: server
+        rtMaven.resolver releaseRepo:'libs-release', snapshotRepo:'libs-snapshot', server: server
+    }
 
-                server.publishBuildInfo buildInfo                
-        
-                 server.upload(uploadSpec) 
-               }
+    stage('Maven build') {
+        buildInfo = rtMaven.run pom: 'simple-java-maven-app/pom.xml', goals: 'clean install'
+    }
+
+    stage('Publish build info') {
+        server.publishBuildInfo buildInfo
     }
 }
 
