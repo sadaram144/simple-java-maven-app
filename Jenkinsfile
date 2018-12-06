@@ -14,7 +14,6 @@ pipeline {
                  def server = Artifactory.server 'Art -1'
                  def rtMaven = Artifactory.newMavenBuild() 
                  echo 'Testing 1'          
-                 rtMaven.deployer server: server, releaseRepo: 'libs-release-local', snapshotRepo: 'libs-snapshot-local' 
                  def uploadSpec = """{
                     "files": [{
                        "pattern": "com.mycompany.app/my-app/1.0-SNAPSHOT/my-app-1.0-SNAPSHOT.jar/",
