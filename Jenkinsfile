@@ -36,6 +36,7 @@
 }
 */
 
+
 node {
     // Get Artifactory server instance, defined in the Artifactory Plugin administration page.
     def server = Artifactory.server "Art -1"
@@ -49,19 +50,19 @@ node {
     }
 
     stage('Artifactory configuration') {
-        // Tool name from Jenkins configuration
-        rtMaven.tool = "Maven-3.3.9"
-        // Set Artifactory repositories for dependencies resolution and artifacts deployment.
-        rtMaven.deployer releaseRepo:'libs-release-local', snapshotRepo:'libs-snapshot-local', server: server
-        rtMaven.resolver releaseRepo:'libs-release', snapshotRepo:'libs-snapshot', server: server
-    }
+    script {         
+                 def server = Artifactory.server 'Art -1'
+                 echo 'Testing 1' 
+                 def uploadSpec = """{
+                    "files": [{
+                       "pattern": "com.mycompany.app/my-app/1.0-SNAPSHOT/my-app-1.0-SNAPSHOT.jar/",
+                       "target": "libs-snapshot-local/",
+                        "regexp": "true"
+                    }]
+                 }"""
 
-    stage('Maven build') {
-        buildInfo = rtMaven.run pom: 'simple-java-maven-app/pom.xml', goals: 'clean install'
-    }
-
-    stage('Publish build info') {
-        server.publishBuildInfo buildInfo
+                 server.upload(uploadSpec) 
+               }
     }
 }
 
