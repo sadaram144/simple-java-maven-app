@@ -11,7 +11,7 @@ pipeline {
         stage('upload') {
            steps {
               script {   
-                  def server = Artifactory.server "artifactory@ibsrv02"
+                  def server = Artifactory.server "Art -1"
                   def buildInfo = Artifactory.newBuildInfo()
                   buildInfo.env.capture = true
                   def rtMaven = Artifactory.newMavenBuild()
