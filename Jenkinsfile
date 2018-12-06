@@ -16,13 +16,19 @@ pipeline {
                   buildInfo.env.capture = true
                   def rtMaven = Artifactory.newMavenBuild()
                   rtMaven.tool = "Maven-3.3.9"
-                  rtMaven.opts = "-Denv=dev"
+                  
                   rtMaven.deployer releaseRepo:'libs-release-local', snapshotRepo:'libs-snapshot-local', server: server
                   rtMaven.resolver releaseRepo:'libs-release', snapshotRepo:'libs-snapshot', server: server
-
+                  
+                  def uploadSpec = """{
+                    "files": [{
+                       "pattern": "com.simple-java-maven-app.App/my-app/1.0-SNAPSHOT/my-app-1.0-SNAPSHOT.jar/",
+                       "target": "libs-snapshot-local/",
+                        "regexp": "true"
+                    }]
+                 }"""
+                  
                   rtMaven.run pom: 'simple-java-maven-app/pom.xml', goals: 'clean install', buildInfo: buildInfo
-
-                  buildInfo.retention maxBuilds: 10, maxDays: 7, deleteBuildArtifacts: true
 
                   server.publishBuildInfo buildInfo
                   
