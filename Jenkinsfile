@@ -12,6 +12,7 @@ pipeline {
            steps {
               script {         
                  def server = Artifactory.server 'Art -1'
+                 echo 'Testing 1' 
                  def uploadSpec = """{
                     "files": [{
                        "pattern": "com.mycompany.app/my-app/1.0-SNAPSHOT/my-app-1.0-SNAPSHOT.jar/",
