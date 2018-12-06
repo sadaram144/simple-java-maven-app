@@ -1,9 +1,6 @@
 pipeline {
     agent any
-        tools { 
-        maven 'Maven 3.6.0' 
-        jdk 'jdk8' 
-    }  
+  
     stages {
         stage('Build') {
             steps {
@@ -18,7 +15,7 @@ pipeline {
                   def buildInfo = Artifactory.newBuildInfo()
                   buildInfo.env.capture = true
                   def rtMaven = Artifactory.newMavenBuild()
-                  rtMaven.tool = "Maven-3.6.0" // Tool name from Jenkins configuration
+                  rtMaven.tool = "Maven-3.3.9"
                   rtMaven.opts = "-Denv=dev"
                   rtMaven.deployer releaseRepo:'libs-release-local', snapshotRepo:'libs-snapshot-local', server: server
                   rtMaven.resolver releaseRepo:'libs-release', snapshotRepo:'libs-snapshot', server: server
@@ -26,7 +23,7 @@ pipeline {
                   rtMaven.run pom: 'simple-java-maven-app/pom.xml', goals: 'clean install', buildInfo: buildInfo
 
                   buildInfo.retention maxBuilds: 10, maxDays: 7, deleteBuildArtifacts: true
-                  // Publish build info.
+
                   server.publishBuildInfo buildInfo
                   
                   
@@ -43,9 +40,11 @@ pipeline {
                     }]
                  }"""
                 def buildInfo = Artifactory.newBuildInfo()
-                server.upload spec: uploadSpec, buildInfo: buildInfo
+                
+                rtMaven.run pom: 'simple-java-maven-app/pom.xml', goals: 'clean install', buildInfo: buildInfo
+
                 server.publishBuildInfo buildInfo  
-                server.upload(uploadSpec) */
+                 */
                }
             }
         }
