@@ -45,6 +45,7 @@ node {
 
     stage('Clone sources') {
         git url: 'https://github.com/sadaram144/simple-java-maven-app.git'
+        echo 'mvn version'
     }
 
     stage('Artifactory configuration') {
