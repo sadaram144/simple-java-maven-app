@@ -17,7 +17,7 @@ pipeline {
                  def uploadSpec = """{
                     "files": [{
                        "pattern": "com.mycompany.app/my-app/1.0-SNAPSHOT/my-app-1.0-SNAPSHOT.jar/",
-                       "target": "libs-snapshot-local/",
+                       "target": "libs-release-local/",
                         "regexp": "true"
                     }]
                  }"""
