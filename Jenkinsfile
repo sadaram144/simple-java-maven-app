@@ -11,8 +11,10 @@ pipeline {
         stage('upload') {
            steps {
               script {         
-                 def server = Artifactory.server 'Art -1'
-                 def rtMaven = Artifactory.newMavenBuild() 
+                 def server = Artifactory.server('Art -1') 
+                 def rtMaven = Artifactory.newMavenBuild()
+                 rtMaven.resolver server: server, releaseRepo: 'libs-release', snapshotRepo: 'libs-snapshot'
+                 rtMaven.deployer server: server, releaseRepo: 'libs-release-local', snapshotRepo: 'libs-snapshot-local'      
                  echo 'Testing 1'          
                  def uploadSpec = """{
                     "files": [{
