@@ -18,7 +18,7 @@ pipeline {
                  echo 'Testing 1'          
                  def uploadSpec = """{
                     "files": [{
-                       "pattern": "com.mycompany.app/my-app/1.0-SNAPSHOT/my-app-1.0-SNAPSHOT.jar/",
+                       "pattern": "com.simple-java-maven-app.App/my-app/1.0-SNAPSHOT/my-app-1.0-SNAPSHOT.jar/",
                        "target": "libs-snapshot-local/",
                         "regexp": "true"
                     }]
