@@ -18,13 +18,14 @@ pipeline {
                     "files": [{
                        "pattern": "com.mycompany.app/my-app/1.0-SNAPSHOT/my-app-1.0-SNAPSHOT.jar/",
                        "target": "libs-release-local/",
+                       "target": "libs-snapshot-local/",
                         "regexp": "true"
                     }]
                  }"""
                 def buildInfo = Artifactory.newBuildInfo()
                 server.upload spec: uploadSpec, buildInfo: buildInfo
                 server.publishBuildInfo buildInfo  
-                // server.upload(uploadSpec) 
+                server.upload(uploadSpec) 
                }
             }
         }
