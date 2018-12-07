@@ -1,6 +1,6 @@
-/* pipeline {
+pipeline {
     agent any
-  
+
     stages {
         stage('Build') {
             steps {
@@ -10,9 +10,8 @@
         }
         stage('upload') {
            steps {
-             
-                  
-                 /*def server = Artifactory.server('Art -1') 
+              script {         
+                 def server = Artifactory.server('Art -1') 
                  def rtMaven = Artifactory.newMavenBuild()
                  rtMaven.resolver server: server, releaseRepo: 'libs-release', snapshotRepo: 'libs-snapshot'
                  rtMaven.deployer server: server, releaseRepo: 'libs-release-local', snapshotRepo: 'libs-snapshot-local'      
@@ -25,39 +24,11 @@
                     }]
                  }"""
                 def buildInfo = Artifactory.newBuildInfo()
-                
-                rtMaven.run pom: 'simple-java-maven-app/pom.xml', goals: 'clean install', buildInfo: buildInfo
-
-                server.publishBuildInfo buildInfo                
-              
+                server.upload spec: uploadSpec, buildInfo: buildInfo
+                server.publishBuildInfo buildInfo  
+                server.upload(uploadSpec) 
+               }
             }
         }
     }
 }
-*/
-
-
-node {
-    // Get Artifactory server instance, defined in the Artifactory Plugin administration page.
-    def server = Artifactory.server "Art -1"
-    // Create an Artifactory Maven instance.
-    def rtMaven = Artifactory.newMavenBuild()
-    def buildInfo
-
-    stage('Artifactory configuration') {
-        // Tool name from Jenkins configuration
-        rtMaven.tool = "Maven-3.6.0"
-        // Set Artifactory repositories for dependencies resolution and artifacts deployment.
-        rtMaven.deployer releaseRepo:'libs-release-local', snapshotRepo:'libs-snapshot-local', server: server
-        rtMaven.resolver releaseRepo:'libs-release', snapshotRepo:'libs-snapshot', server: server
-    }
-
-    stage('Maven build') {
-         rtMaven.run pom: 'simple-java-maven-app/pom.xml', goals: 'clean install', buildInfo: buildInfo
-    }
-
-    stage('Publish build info') {
-        server.publishBuildInfo buildInfo
-    }
-}
-
