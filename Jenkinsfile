@@ -1,16 +1,9 @@
-pipeline {
-    agent any
-
-    stages {
+node {
         stage('Build') {
-            steps {
                 sh 'mvn -B -DskipTests clean package'
                 echo 'Package Build'
-            }
         }
         stage('upload') {
-           steps {
-              script {         
                  def server = Artifactory.server('Art -1') 
                  def rtMaven = Artifactory.newMavenBuild()
                  rtMaven.resolver server: server, releaseRepo: 'libs-release', snapshotRepo: 'libs-snapshot'
@@ -18,7 +11,7 @@ pipeline {
                  echo 'Testing 1'          
                  def uploadSpec = """{
                     "files": [{
-                       "pattern": "com.simple-java-maven-app.App/my-app/1.0-SNAPSHOT/my-app-1.0-SNAPSHOT.jar/",
+                       "pattern": "target/Artifactory-1.0-SNAPSHOT.jar",
                        "target": "libs-snapshot-local/",
                         "regexp": "true"
                     }]
@@ -27,8 +20,6 @@ pipeline {
                 server.upload spec: uploadSpec, buildInfo: buildInfo
                 server.publishBuildInfo buildInfo  
                 server.upload(uploadSpec) 
-               }
-            }
         }
-    }
+    
 }
