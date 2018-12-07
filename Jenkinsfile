@@ -53,7 +53,7 @@ node {
     }
 
     stage('Maven build') {
-         rtMaven.run pom: 'Maven-App-Artifact/simple-java-maven-app/pom.xml', goals: 'clean install', buildInfo: buildInfo
+         rtMaven.run pom: 'simple-java-maven-app/pom.xml', goals: 'clean install', buildInfo: buildInfo
     }
 
     stage('Publish build info') {
