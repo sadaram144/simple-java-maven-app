@@ -1,0 +1,20 @@
+<server>
+      <username>admin</username>
+      <password>AP447H6DXXJW6WW54BvNBorau5s</password>
+      <id>artifactory</id>
+</server>
+<repository>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+          <id>artifactory</id>
+          <name>Sample Java Maven app</name>
+          <url>http://localhost:8081/artifactory/</url>
+</repository>
+<distributionManagement>
+      <repository>
+        <id>artifactory</id>
+        <name>HelloMaven-release</name>
+        <url>http://localhost:8081/artifactory/</url>
+       </repository>
+</distributionManagement>
